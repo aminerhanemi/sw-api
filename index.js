@@ -1,9 +1,9 @@
-const express = require('express')
-const app = express()
-const port = 8080
-const rp = require('request-promise')
+const express = require('express');
+const app = express();
+const port = 3000;
+const rp = require('request-promise');
 
-const imdb_end_point = 'https://swapi.co/api/people/?page=';
+const swapi_end_point = 'https://swapi.co/api/people/?page=';
 let swCharacters = [];
 
 app.use(function (req, res, next) {
@@ -15,11 +15,10 @@ app.use(function (req, res, next) {
 app.get('/swpeople', async (req, res) => {
     if (swCharacters.length === 0) {
         try {
-            const results = await makeRequestAll(1)
-            swCharacters = results.map(person => person.name)
-            res.send(swCharacters);
+            const results = await makeRequestAll(1);
+            swCharacters = results.map(person => person.name);
         } catch (err) {
-            console.err(err)
+            console.err(err);
         };
     }
     res.send(swCharacters);
@@ -32,10 +31,10 @@ app.get('/', async (req, res) => {
 
 async function makeRequestAll (page, list = []) {
     try {
-        const data = JSON.parse(await rp(imdb_end_point + page))
-        list = list.concat(data.results)
+        const data = JSON.parse(await rp(swapi_end_point + page));
+        list = list.concat(data.results);
         if (data.next) {
-            list = await makeRequestAll(page + 1, list)
+            list = await makeRequestAll(page + 1, list);
         }
         return list;
     } catch (err) {
@@ -43,6 +42,6 @@ async function makeRequestAll (page, list = []) {
     }
 }
 
-app.listen(port, () => console.log(` app listening on port ${port}!`))
+app.listen(port, () => console.log(` app listening on port ${port}!`));
 
 
